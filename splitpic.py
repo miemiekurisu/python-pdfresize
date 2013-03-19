@@ -2,7 +2,7 @@
 import Image
 import os
 img=Image.open('D:\\cover2.png')
-
+## img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
 
 def scanpic(image , sf):
     coverbw=image.convert('1')
