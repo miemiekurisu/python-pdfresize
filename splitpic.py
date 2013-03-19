@@ -1,34 +1,88 @@
 # -*- coding: utf-8 -*-
+import Image
+import os
+img=Image.open('D:\\cover2.png')
+
+
+def scanpic(image , sf):
+    coverbw=image.convert('1')
+    w,h = coverbw.size
+    pixline = []
+    if sf =='w':
+        for i in range(1,h,1):
+            img1=coverbw.transform ((w,1),Image.EXTENT ,(0,i,w,i+1))
+            if 0 in list(img1.getdata()):
+                pixline.append(i)
+            else:
+                pixline.append(0)
+                continue
+    elif  sf=='h':
+        for i in range(1,w,1):
+            img1=coverbw.transform ((1,h),Image.EXTENT ,(i,0,i+1,h))
+            if 0 in list(img1.getdata()):
+                pixline.append(i)
+            else:
+                pixline.append(0)
+                continue
+    return pixline
+
 listbw =scanpic(img,'w')
-listtmp=[]
-flag=0
-for i in range(0,len(listbw)):
-    a = listbw[i]
-    if (flag==0) & (a!=0):
-        listtmp.append(i)
-        flag=1
-    elif(flag!=0)&(a==0):
-        listtmp.append(i)
-        flag=0
+
+
+def rowscan(imglist):
+    listtmp=[]
+    flag=0
+    for i in range(0,len(listbw)):
+        a = listbw[i]
+        if (flag==0) & (a!=0):
+            listtmp.append(i)
+            flag=1
+        elif(flag!=0)&(a==0):
+            listtmp.append(i)
+            flag=0
+    dictheight={}
+    dictwhiteheight={}
+    for i in range(1,len(listtmp)):
+        if i%2==1:
+            dictheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
+        else:
+            dictwhiteheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
+    down,up =statisticavg(dictheight.values() )
+    listavg = []
+    for i in dictheight.keys():
+        if (dictheight[i]>=down) & (dictheight[i]<=up):
+            listavg.append((i,dictheight[i]))
+    return listtmp,listavg
+
+def statisticavg(anylist):
+    anyset=set(anylist)
+    maxnum=0
+    heightofrow=0
+    for item in anyset:
+        a=anylist.count(item)
+        if a>maxnum:
+            maxnum=a
+            heightofrow=item
+    avgrange = (maxnum*0.7,maxnum*1.3)
+    return avgrange
+
+##def getavg(anylist,avgrange):
+##    for i in range(0,len(anylist)):
         
+                         
+
 print listtmp
 
 
-for i in range(0,len(listtmp)):
-    if i==0:
-        row=img.transform((w,listtmp[i]+1),Image.EXTENT,(0,0,w,listtmp[i]+1))
-    else:
-        row=img.transform((w,listtmp[i]-listtmp[i-1]+1),Image.EXTENT,(0,listtmp[i-1]+1,w,listtmp[i]+2))
-    path = 'D:\\tmp\\row'+str(i)+'.png'
-    row.save(path)
+##for i in range(0,len(listtmp)):
+##    if i==0:
+##        row=img.transform((w,listtmp[i]+1),Image.EXTENT,(0,0,w,listtmp[i]+1))
+##    else:
+##        row=img.transform((w,listtmp[i]-listtmp[i-1]+1),Image.EXTENT,(0,listtmp[i-1]+1,w,listtmp[i]+2))
+##    path = 'D:\\tmp\\row'+str(i)+'.png'
+##    row.save(path)
 
-rowhight=[]
-whitehight=[]
-for i in range(1,len(listtmp)):
-	if i%2==1:
-		rowhight.append((listtmp[i-1]+1,listtmp[i],listtmp[i]-listtmp[i-1]))
-	else:
-		whitehight.append((listtmp[i-1]+1,listtmp[i],listtmp[i]-listtmp[i-1]))
+
 
 ##use data structure (words/pic,indantation,(left top x, left top y, right bottom x, right bottom y))
 ## 取平均行高, 偏差在±20%, 设为文字行
@@ -45,3 +99,24 @@ for i in range(1,len(listtmp)):
 ## 重排后行首位置取决于si与S的相对位置, 若
 ## 
 ##2. if height deviation < ±40% , regards it like same simple characters line
+## 以上内容完全想错了, 但是scanpic函数的一部分可以复用
+## 在没有做logic layout analysis之前,无法得知哪些是页眉,页脚,侧边栏
+## 首先做版面无关的扫描,自顶向下横向逐行扫描
+## 需要取得的数据:
+## 1. 物理每行高度
+## 2. 物理行间距
+## 将整个图片分割为物理行
+## 每个物理行从左向右纵向逐行扫描
+## 需要取得的数据:
+## 1. 物理行起始距离页左边距
+## 2. 物理行结束距离页右边距
+## 3. 将物理行纵向分割开, 分割为"图框/间距/图框..."的形式
+## 版面分析基于某些事实和假设:
+## 1. 假设正文文字部分行开始和行结束都在一个给定的范围之内
+## 2. 假设, 正文占页面绝大多数内容
+## 3. 事实,字符间距小于可断行间距
+## 我忽然想到是不是先可以统计一下每一行起始和每一行结束
+## 去掉不规律的部分做重扫描, 如果基于假设2,去掉不规律部分就是正常的正文版面
+## 然后就只需要处理不规律的部分了, 对不规律的部分做重扫描, 确定是何种类型的不规律
+## 不规律的类型:标题,页眉, 页脚, 两侧边栏, 图片
+## 这样定义不规律部分, 基于假设1, 如果(起始 or 结束) and 行高判定为false

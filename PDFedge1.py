@@ -1,16 +1,6 @@
 import Image
 import os
 img=Image.open('D:\\cover2.png')
-##coverbw=img.convert('1')
-##w,h = img.size
-##pixline = []
-##for i in range(0,h,1):
-##    img1=coverbw.transform ((w,1),Image.EXTENT ,(0,i,w,1))
-##    if 0 in list(img1.getdata()):
-##        pixline.append(i-1)
-##    else:
-##        pixline.append(0)
-##        continue
 
 
 def scanpic(image , sf):
