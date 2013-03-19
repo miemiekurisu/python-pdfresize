@@ -1,4 +1,0 @@
-python-pdfresize
-================
-
-pdfresize
