@@ -47,11 +47,7 @@ def rowscan(imglist):
             dictheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
         else:
             dictwhiteheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
-    down,up =statisticavg(dictheight.values() )
-    listavg = []
-    for i in dictheight.keys():
-        if (dictheight[i]>=down) & (dictheight[i]<=up):
-            listavg.append((i,dictheight[i]))
+    listavg = getavg(dictheight)
     return listtmp,listavg
 
 def statisticavg(anylist):
@@ -66,9 +62,13 @@ def statisticavg(anylist):
     avgrange = (maxnum*0.7,maxnum*1.3)
     return avgrange
 
-##def getavg(anylist,avgrange):
-##    for i in range(0,len(anylist)):
-        
+def getavg(dictavg):
+    listavg = []
+    down,up =statisticavg(dictavg.values() )
+    for i in dictavg.keys():
+        if (dictavg[i]>=down) & (dictavg[i]<=up):
+            listavg.append((i,dictavg[i]))
+    return listavg
                          
 
 print listtmp
@@ -112,11 +112,12 @@ print listtmp
 ## 2. 物理行结束距离页右边距
 ## 3. 将物理行纵向分割开, 分割为"图框/间距/图框..."的形式
 ## 版面分析基于某些事实和假设:
-## 1. 假设正文文字部分行开始和行结束都在一个给定的范围之内
+## 1. 假设正文文字部分行开始和行结束都在一个给定的标准范围之内
 ## 2. 假设, 正文占页面绝大多数内容
 ## 3. 事实,字符间距小于可断行间距
 ## 我忽然想到是不是先可以统计一下每一行起始和每一行结束
 ## 去掉不规律的部分做重扫描, 如果基于假设2,去掉不规律部分就是正常的正文版面
 ## 然后就只需要处理不规律的部分了, 对不规律的部分做重扫描, 确定是何种类型的不规律
 ## 不规律的类型:标题,页眉, 页脚, 两侧边栏, 图片
-## 这样定义不规律部分, 基于假设1, 如果(起始 or 结束) and 行高判定为false
+## 这样定义不规律部分, 基于假设1, 如果(起始 or 结束) and 行高,行间距判定为false
+## 现在到了判断纵向标准起始和标准结束的地方,与横向判断逻辑上一致
