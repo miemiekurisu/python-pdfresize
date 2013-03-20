@@ -32,8 +32,8 @@ listbw =scanpic(img,'w')
 def rowscan(imglist):
     listtmp=[]
     flag=0
-    for i in range(0,len(listbw)):
-        a = listbw[i]
+    for i in range(0,len(imglist)):
+        a = imglist[i]
         if (flag==0) & (a!=0):
             listtmp.append(i)
             flag=1
@@ -70,6 +70,15 @@ def getavg(dictavg):
             listavg.append((i,dictavg[i]))
     return listavg
                          
+
+def listformaledge(rowscanlist,w,h):
+    formalimglist=[]
+    for i in rowscanlist:
+        imgstart,height=i
+        imgtmp=img.transform ((w,height),Image.EXTENT ,(0,imgstart,w,imgstart+height))
+        formalimglist.append(scanpic(imgtmp,'h'))
+    return formalimglist
+
 
 print listtmp
 
