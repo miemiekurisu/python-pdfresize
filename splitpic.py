@@ -3,7 +3,7 @@ import Image
 import os
 img=Image.open('D:\\cover2.png')
 ## img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
-
+w,h=img.size
 def scanpic(image , sf):
     coverbw=image.convert('1')
     w,h = coverbw.size
@@ -47,10 +47,10 @@ def rowscan(imglist):
             dictheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
         else:
             dictwhiteheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
-    listavg = getavg(dictheight)
-    return listtmp,listavg
+    #listavg = getavg(dictheight)
+    return dictheight,dictwhiteheight
 
-def statisticavg(anylist):
+def statisticavg(anylist, fix):
     anyset=set(anylist)
     maxnum=0
     heightofrow=0
@@ -59,30 +59,31 @@ def statisticavg(anylist):
         if a>maxnum:
             maxnum=a
             heightofrow=item
-    avgrange = (maxnum*0.7,maxnum*1.3)
+    avgrange = (maxnum*(1-fix), maxnum*(1+fix))
     return avgrange
 
 def getavg(dictavg):
     listavg = []
-    down,up =statisticavg(dictavg.values() )
+    down,up =statisticavg(dictavg.values(),0.4 )
     for i in dictavg.keys():
         if (dictavg[i]>=down) & (dictavg[i]<=up):
             listavg.append((i,dictavg[i]))
     return listavg
                          
 
-def listformaledge(rowscanlist,w,h):
+def listformaledge(image,rowscanlist,w,h):
     formalimglist=[]
-    for i in rowscanlist:
-        imgstart,height=i
-        imgtmp=img.transform ((w,height),Image.EXTENT ,(0,imgstart,w,imgstart+height))
-        formalimglist.append(scanpic(imgtmp,'h'))
+    for i in rowscanlist.keys():
+        imgtmp=image.transform ((w,rowscanlist.get(i)),Image.EXTENT ,(0,i,w,i+rowscanlist.get(i)))
+        formalimglist.append(imgtmp)
     return formalimglist
 
 
-print listtmp
 
 
+
+line,whiteline=rowscan(listbw)
+avgline = getavg(line)
 ##for i in range(0,len(listtmp)):
 ##    if i==0:
 ##        row=img.transform((w,listtmp[i]+1),Image.EXTENT,(0,0,w,listtmp[i]+1))
