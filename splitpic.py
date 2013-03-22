@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import Image
 import os
-img=Image.open('D:\\cover2.png')
-## img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
+## img=Image.open('D:\\cover2.png')
+img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
 w,h=img.size
 def scanpic(image , sf):
     coverbw=image.convert('1')
@@ -62,13 +62,13 @@ def statisticavg(anylist, fix):
     avgrange = (maxnum*(1-fix), maxnum*(1+fix))
     return avgrange
 
-def getavg(dictavg):
-    listavg = []
-    down,up =statisticavg(dictavg.values(),0.4 )
-    for i in dictavg.keys():
-        if (dictavg[i]>=down) & (dictavg[i]<=up):
-            listavg.append((i,dictavg[i]))
-    return listavg
+def getavg(dictline):
+    dicavg = {}
+    down,up =statisticavg(dictline.values(),0.3 )
+    for i in dictline.keys():
+        if (dictline[i]>=down) & (dictline[i]<=up):
+            dicavg[i]=dictline[i]
+    return dicavg
                          
 
 def listformaledge(image,rowscanlist,w,h):
@@ -79,11 +79,29 @@ def listformaledge(image,rowscanlist,w,h):
     return formalimglist
 
 
-
-
+def getfl(listscan):
+    fl=[]
+    for i in range(0, len(listscan)-1, 1):
+        if listscan[i]!=0:
+            fl.append(listscan[i])
+            break
+        else:
+            continue
+    for i in range(len(listscan)-1, 0, -1):
+        if listscan[i]!=0:
+            fl.append(listscan[i])
+            break
+        else:
+            continue
+    return fl
 
 line,whiteline=rowscan(listbw)
 avgline = getavg(line)
+
+for i in avg.keys():
+    imagetemp=img.transform((w,avg.get(i)),Image.EXTENT,(0,i,w,i+avg.get(i)))
+    scanh=scanpic(imagetemp,'h')
+    fllst.append(getfl(scanh))
 ##for i in range(0,len(listtmp)):
 ##    if i==0:
 ##        row=img.transform((w,listtmp[i]+1),Image.EXTENT,(0,0,w,listtmp[i]+1))
