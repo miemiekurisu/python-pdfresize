@@ -64,7 +64,7 @@ def statisticavg(anylist, fix):
 
 def getavg(dictline):
     dicavg = {}
-    down,up =statisticavg(dictline.values(),0.3 )
+    down,up =statisticavg(dictline.values(),0.2 )
     for i in dictline.keys():
         if (dictline[i]>=down) & (dictline[i]<=up):
             dicavg[i]=dictline[i]
@@ -105,6 +105,10 @@ for i in avg.keys():
     scanh=scanpic(imagetemp,'h')
     flist.append(getfl(scanh,'f'))
     edlist.append(getfl(scanh,'l'))
+
+a1,a2=statisticavg(flist,0.01)
+e1,e2=statisticavg(edlist,0.01)
+
 
 
 ##for i in range(0,len(listtmp)):
