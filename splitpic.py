@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import Image
 import os
-img=Image.open('D:\\cover2.png')
-##img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
+#img=Image.open('D:\\cover2.png')
+img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
 w,h=img.size
 def scanpic(image , sf):
     coverbw=image.convert('1')
@@ -69,7 +69,7 @@ def getavg(dictline):
         if (dictline[i]>=down) & (dictline[i]<=up):
             dicavg[i]=dictline[i]
     return dicavg
-                         
+
 def statistic(anylist):
     anyset=set(anylist)
     rtlst={}
@@ -93,7 +93,7 @@ def getfl(listscan,mod):
         a,b,c = 0, len(listscan)-1,1
     elif mod=='l':
         a,b,c = len(listscan)-1, 0, -1
-        
+
     for i in range(a, b, c):
         if listscan[i]!=0:
             fl=listscan[i]
@@ -110,11 +110,13 @@ edlist=[]
 imglist=[]
 startisA={}
 startisN={}
+scanrowlist=[]
 for i in line.keys():
     imagetemp=img.transform((w,line.get(i)),Image.EXTENT,(0,i,w,i+line.get(i)))
     imglist.append(imagetemp)
     scanh=scanpic(imagetemp,'h')
     scanrow,scann = rowscan(scanh)
+    scanrowlist.append(scanrow)
     avgtmp=statistic(scanrow.values())
     avgtmpno=statistic(scann.values())
     for item in avgtmp.keys():
@@ -156,13 +158,13 @@ e1,e2=statisticavg(edlist,0.01)
 ## 手动指定是否存在页眉页脚,栏数, 边栏
 ## 统计总行数n的起始A1=(s1,s2...sn),结束A2=(e1,e2...en)
 ## 选择最多的sk,设置为左边界标杆S, 边界起始偏差允许在±10%, 选择最多的边界结束E,偏差允许在±10%
-## 
+##
 ## 图片维持原比例或缩小比例至适合标准行长
 ## i=0 时, 若指定存在页眉, 则si左边界重定为左边界标杆. 若s0超过最长长度且不可截断,
 ## 则调整s0大小,使适合最长长度.若不存在页眉, 则处理方式同i=[1,n-1]
 ## i=[1,n-1]时, 保持S与si位置,若si超过显示设置最长长度,则进行截断重排,
 ## 重排后行首位置取决于si与S的相对位置, 若
-## 
+##
 ##2. if height deviation < ±40% , regards it like same simple characters line
 ## 以上内容完全想错了, 但是scanpic函数的一部分可以复用
 ## 在没有做logic layout analysis之前,无法得知哪些是页眉,页脚,侧边栏
