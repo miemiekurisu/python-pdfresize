@@ -70,6 +70,13 @@ def getavg(dictline):
             dicavg[i]=dictline[i]
     return dicavg
                          
+def statistic(anylist):
+    anyset=set(anylist)
+    rtlst={}
+    for item in anyset:
+        a=anylist.count(item)
+        rtlst[item]=a
+    return rtlst
 
 def listformaledge(image,rowscanlist,w,h):
     formalimglist=[]
@@ -97,20 +104,41 @@ def getfl(listscan,mod):
 
 line,whiteline=rowscan(listbw)
 avg = getavg(line)
-
+avgrowh1,avgrowh2 = statisticavg(line.values(),0.2)
 flist=[]
 edlist=[]
-for i in avg.keys():
-    imagetemp=img.transform((w,avg.get(i)),Image.EXTENT,(0,i,w,i+avg.get(i)))
+imglist=[]
+startisA={}
+startisN={}
+for i in line.keys():
+    imagetemp=img.transform((w,line.get(i)),Image.EXTENT,(0,i,w,i+line.get(i)))
+    imglist.append(imagetemp)
     scanh=scanpic(imagetemp,'h')
-    flist.append(getfl(scanh,'f'))
-    edlist.append(getfl(scanh,'l'))
+    scanrow,scann = rowscan(scanh)
+    avgtmp=statistic(scanrow.values())
+    avgtmpno=statistic(scann.values())
+    for item in avgtmp.keys():
+        if startisA.get(item) is None:
+            startisA[item]=avgtmp.get(item)
+        else:
+            startisA[item]=startisA[item]+avgtmp.get(item)
+    for item in avgtmpno.keys():
+        if startisN.get(item) is None:
+            startisN[item]=avgtmpno.get(item)
+        else:
+            startisN[item]=startisN[item]+avgtmpno.get(item)
 
 a1,a2=statisticavg(flist,0.01)
 e1,e2=statisticavg(edlist,0.01)
 
 
-
+##for i in line.keys():
+##    rowh = line.get(i)
+##    imagetemp=img.transform((w,rowh),Image.EXTENT,(0,i,w,i+rowh))
+##    scanh=scanpic(imagetemp,'h')
+##    f = getfl(scanh,'f')
+##    e = getfl(scanh,'l')
+   ## if (scanh>=
 ##for i in range(0,len(listtmp)):
 ##    if i==0:
 ##        row=img.transform((w,listtmp[i]+1),Image.EXTENT,(0,0,w,listtmp[i]+1))
@@ -158,4 +186,10 @@ e1,e2=statisticavg(edlist,0.01)
 ## 不规律的类型:标题,页眉, 页脚, 两侧边栏, 图片
 ## 这样定义不规律部分, 基于假设1, 如果(起始 or 结束) and 行高,行间距判定为false
 ## 现在到了判断纵向标准起始和标准结束的地方,与横向判断逻辑上一致
-## 2013/03/20 我觉得既然这样不如把一页化为image list,然后走循环去判断标准行高和标准行起始,标准行结束
+## 2013/03/20 觉得既然这样不如把一页化为image list,然后走循环去判断标准行高和标准行起始,标准行结束
+## 2013/04/02 是不是要自底向上? 是不是要自底向上?!
+## 我需要一个数据结构, 让我不要做多余的事情.
+## 最后整件事情还是归结为"怎么能知道这块区域和其他区域不一样?"
+## 要描绘出正文部分和其他部分, 只将正文部分重排就可以了,图片按比例缩小(如果需要)
+## 标准起始,标准结束,第一行标准行,最末标准标准行, 若其中任意行超过标准行长, 且标准行长之后存在不连通性
+## 则认为之后部分都为其他部分, 以此描绘标准正文区域.
