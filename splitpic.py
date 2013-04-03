@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import Image
 import os
-#img=Image.open('D:\\cover2.png')
-img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
+img=Image.open('D:\\cover2.png')
+#img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
 w,h=img.size
 def scanpic(image , sf):
     coverbw=image.convert('1')
@@ -102,6 +102,15 @@ def getfl(listscan,mod):
             continue
     return fl
 
+def calcF(anydic):
+    sumblank=0
+    sumblankno=0
+
+    for item in anydic.keys():
+        sumblank+=item*anydic.get(item)
+        sumblankno+=anydic.get(item)
+    return sumblank/sumblankno
+
 line,whiteline=rowscan(listbw)
 avg = getavg(line)
 avgrowh1,avgrowh2 = statisticavg(line.values(),0.2)
@@ -134,6 +143,11 @@ a1,a2=statisticavg(flist,0.01)
 e1,e2=statisticavg(edlist,0.01)
 
 
+FAW = calcF(startisA)
+FAD = calcF(startisN)
+
+
+print FAW, FAD
 ##for i in line.keys():
 ##    rowh = line.get(i)
 ##    imagetemp=img.transform((w,rowh),Image.EXTENT,(0,i,w,i+rowh))
