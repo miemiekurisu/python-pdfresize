@@ -102,6 +102,27 @@ def getfl(listscan,mod):
             continue
     return fl
 
+def detailscan(imglist):
+    listtmp=[]
+    flag=0
+    for i in range(0,len(imglist)):
+        a = imglist[i]
+        if (flag==0) & (a!=0):
+            listtmp.append(i)
+            flag=1
+        elif(flag!=0)&(a==0):
+            listtmp.append(i)
+            flag=0
+    dictheight={}
+    dictwhiteheight={}
+    for i in range(1,len(listtmp)):
+        if i%2==1:
+            dictheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
+        else:
+            dictwhiteheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
+    #listavg = getavg(dictheight)
+    return dictheight,dictwhiteheight
+
 line,whiteline=rowscan(listbw)
 avg = getavg(line)
 avgrowh1,avgrowh2 = statisticavg(line.values(),0.2)
@@ -195,3 +216,5 @@ e1,e2=statisticavg(edlist,0.01)
 ## 要描绘出正文部分和其他部分, 只将正文部分重排就可以了,图片按比例缩小(如果需要)
 ## 标准起始,标准结束,第一行标准行,最末标准标准行, 若其中任意行超过标准行长, 且标准行长之后存在不连通性
 ## 则认为之后部分都为其他部分, 以此描绘标准正文区域.
+## 数据结构怎么说? 每一行扫描之后应该生成怎样的数据结构? (文字/空白,长度)
+## 真烦,让用户自己处理切边问题好了,1栏超过标准边界2个字符以上的都认为是边界外
