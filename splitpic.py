@@ -160,7 +160,7 @@ aa.sort()
 scann[0]=0
 
 for i in range(1,len(aa)):
-     imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1]),0,aa[i],25))
+     imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1])+1,0,aa[i],25))
      temppics.append(imagetempaa)
 
 for i in range(0,len(temppics)):
