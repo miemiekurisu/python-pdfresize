@@ -160,7 +160,7 @@ aa.sort()
 scann[0]=0
 
 for i in range(1,len(aa)):
-     imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1])+1,0,aa[i],25))
+     imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1]),0,aa[i]+1,25))
      temppics.append(imagetempaa)
 
 for i in range(0,len(temppics)):
@@ -226,3 +226,5 @@ for i in range(0,len(temppics)):
 ## 要描绘出正文部分和其他部分, 只将正文部分重排就可以了,图片按比例缩小(如果需要)
 ## 标准起始,标准结束,第一行标准行,最末标准标准行, 若其中任意行超过标准行长, 且标准行长之后存在不连通性
 ## 则认为之后部分都为其他部分, 以此描绘标准正文区域.
+## 这是一个递归的过程,但是该死的是我要写成迭代
+## 我怎么知道是页眉,页脚和左右边栏, 这些东西有明显特征么?
