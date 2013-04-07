@@ -165,6 +165,12 @@ for i in range(1,len(aa)):
      imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1]),0,aa[i]+1,25))
      temppics.append(imagetempaa)
 
+imageall = None
+for i in range(0,599):
+    if i==0:
+        imageall=imglist[i]
+    else:
+        imageall=ImageChops.darker(imglist[i],imageall)
 
 #for i in range(0,len(temppics)):
 #   temppics[i].save('D:\\tmp\\'+str(i)+'.png')
