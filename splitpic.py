@@ -157,14 +157,18 @@ for item in scann.keys():
 aa=scann.keys()
 aa.append(0)
 aa.sort()
-scann[0]=0 
+
+scann[0]=0
+
 
 for i in range(1,len(aa)):
      imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1]),0,aa[i]+1,25))
      temppics.append(imagetempaa)
 
+
 #for i in range(0,len(temppics)):
 #   temppics[i].save('D:\\tmp\\'+str(i)+'.png')
+
 ##for i in line.keys():
 ##    rowh = line.get(i)
 ##    imagetemp=img.transform((w,rowh),Image.EXTENT,(0,i,w,i+rowh))
