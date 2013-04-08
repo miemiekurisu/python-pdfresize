@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import Image
 import os
-#img=Image.open('D:\\cover2.png')
-img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
+import ImageChops
+img=Image.open('D:\\cover2.png')
+#img = Image.open('/Users/chris/Dev/github/python-pdfresize/cover2.png')
 w,h=img.size
 def scanpic(image , sf):
     coverbw=image.convert('1')
@@ -164,14 +165,20 @@ scann[0]=0
 for i in range(1,len(aa)):
      imagetempaa=imagetemp.transform((aa[i]-aa[i-1],25),Image.EXTENT,(aa[i-1]+scann.get(aa[i-1]),0,aa[i]+1,25))
      temppics.append(imagetempaa)
+     
+#os.system('gswin32c.exe -q -sDEVICE=pnggray -dBATCH -dNOPAUSE -dFirstPage=1 -dLastPage=20 -r150 -sOutputFile="D:\\tmp\\cover-%d.png" "D:\\1.pdf"')
 
+imglist=[]
 imageall = None
-for i in range(0,599):
-    if i==0:
-        imageall=imglist[i]
+for i in range(1,670):
+    if i==1:
+        imageall=Image.open('D:\\tmp\\pic-'+str(i)+'.png')
+        continue
     else:
-        imageall=ImageChops.darker(imglist[i],imageall)
-
+        imgtmp=Image.open('D:\\tmp\\pic-'+str(i)+'.png')
+        imageall=ImageChops.darker(imgtmp,imageall)
+        imgtmp=None
+        continue
 #for i in range(0,len(temppics)):
 #   temppics[i].save('D:\\tmp\\'+str(i)+'.png')
 
