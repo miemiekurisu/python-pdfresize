@@ -1,6 +1,7 @@
 import Image
 import os
 import ImageChops
+from scanmodule import generalscan
 
 global gspath
 global temppath
@@ -92,7 +93,9 @@ def overlying(filepath,filename,startpic,endpic,lying,pathflag):
             imgtmp=None
             continue
     return imageall
-    
+
+
+
 def cropblank(listimage):
     None
 

@@ -44,3 +44,4 @@ def scalbox(imglist):
             dictwhiteheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
     #listavg = getavg(dictheight)
     return dictheight,dictwhiteheight
+    
