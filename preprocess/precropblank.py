@@ -1,8 +1,23 @@
 import Image
 import os
+import ImageChops
 
 global gspath
 global temppath
+global filepath
+global filename
+global pathflag
+
+if(os.sys.platform=='win32'):
+    gspath = 'gswin32c.exe'
+    filepath= 'D:\\tmp\\'
+    pathflag='\\'
+    filename = '1.pdf'
+else:
+    gspath = '/usr/local/bin/gs'
+    filepath = '/Users/chris/Dev/tmp/'
+    pathflag='/'
+    filename = '1.pdf'
 
 def pdffileinput():
     filepath = raw_input('Please input file path:')
@@ -36,13 +51,13 @@ def basesetup():
     else:
         print 'Error'
 
-def propertyfile():
+def propertyfile(valuedict):
     None
 
 def extracttoimg(): #static arg for developing/testing
     if(os.sys.platform=='win32'):
         gspath = 'gswin32c.exe'
-        filepath= 'D:\\temp\\'
+        filepath= 'D:\\tmp\\'
         flag='\\'
     else:
         gspath = '/usr/local/bin/gs'
@@ -64,7 +79,20 @@ def extracttoimg(): #static arg for developing/testing
         os.mkdir(filepath+filename+'tmp')
     os.system(gspath+cmdstr1+firstpage+lastpage+r+outfile+'"'+filepath+filename+'"')
     
-
-def cropblank(image):
+def overlying(filepath,filename,startpic,endpic,lying,pathflag):
+    #TODO lying is about the overlying type
+    picspath = filepath+filename+'tmp'+pathflag
+    for i in range(startpic,endpic):
+        if i==startpic:
+            imageall=Image.open(picspath+filename+'-'+str(i)+'.png')
+            continue
+        else:
+            imgtmp=Image.open(picspath+filename+'-'+str(i)+'.png')
+            imageall=ImageChops.darker(imgtmp,imageall)
+            imgtmp=None
+            continue
+    return imageall
+    
+def cropblank(listimage):
     None
 
