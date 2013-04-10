@@ -65,12 +65,13 @@ def extracttoimg(): #static arg for developing/testing
         filepath = '/Users/chris/Dev/tmp/'
         flag='/'
     filename = '1.pdf'
-    pagerange=[1,670]
+    pagestart=1
+    pageend=670
     dpi=150
     
     cmdstr1=' -q -sDEVICE=pnggray -dBATCH -dNOPAUSE '
-    firstpage = '-dFirstPage='+str(pagerange[0])+' '
-    lastpage = '-dLastPage='+str(pagerange[1])+' '
+    firstpage = '-dFirstPage='+str(pagestart)+' '
+    lastpage = '-dLastPage='+str(pageend)+' '
     r = '-r'+str(dpi)+' '
     outfile = '-sOutputFile="'+filepath+filename+'tmp'+flag+filename+'-%d.png" '
     
@@ -79,6 +80,7 @@ def extracttoimg(): #static arg for developing/testing
     else: 
         os.mkdir(filepath+filename+'tmp')
     os.system(gspath+cmdstr1+firstpage+lastpage+r+outfile+'"'+filepath+filename+'"')
+    return pageend
     
 def overlying(filepath,filename,startpic,endpic,lying,pathflag):
     #TODO lying is about the overlying type
@@ -95,7 +97,14 @@ def overlying(filepath,filename,startpic,endpic,lying,pathflag):
     return imageall
 
 
-
-def cropblank(listimage):
+def centralizepic(image):
     None
 
+def cropblank(image):
+
+    wlist=generalscan.rawscan(image,'w')
+    hlist=generalscan.rawscan(image,'h')
+    testedge= generalscan.edgeboxscan(wlist,hlist)
+    
+    image=image.transform ((testedge[1][0]-testedge[0][0],testedge[1][1]-testedge[0][1]),Image.EXTENT ,(testedge[0][0],testedge[0][1],testedge[1][0],testedge[1][1]))
+    return image

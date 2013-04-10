@@ -6,6 +6,7 @@ from preprocess import precropblank
 from scanmodule import generalscan
 import math
 
+
 if(os.sys.platform=='win32'):
     gspath = 'gswin32c.exe'
     filepath= 'D:\\tmp\\'
@@ -17,25 +18,29 @@ else:
     pathflag='/'
     filename = '1.pdf'
 
+
 picname = filepath+filename+'tmp'+pathflag+filename+'-'
-testimg = precropblank.overlying(filepath,filename,10,600,None,pathflag)
-tmp=generalscan.rawscan(testimg,'w')
-tm1,tm2 = generalscan.scalbox(tmp)
-l=tm1.keys()
-l.sort()
-
-        
-p52=Image.open(picname+'52.png')
-p52s=generalscan.rawscan(p52,'w')
-p52test=[]
-for i in l:
-    listl=p52s[i-1:i+tm1.get(i)-1]
-    p52test.append(listl)
-    
-p52box=[]
-for i in p52test:
-    p52a,p52b=generalscan.scalbox(i)
-    p52box.append(p52a)
-
-
-    
+#os.rmdir(filepath+filename+'tmp')
+pages = precropblank.extracttoimg()
+# testimg = precropblank.overlying(filepath,filename,10,600,None,pathflag)
+# tmp=generalscan.rawscan(testimg,'w')
+# tm1,tm2 = generalscan.scalbox(tmp)
+# l=tm1.keys()
+# l.sort()
+# 
+#         
+# p53=Image.open(picname+'53.png')
+# p53s=generalscan.rawscan(p53,'w')
+# p53test=[]
+# for i in l:
+#     listl=p53s[i-1:i+tm1.get(i)-1]
+#     p53test.append(listl)
+#     
+# p53box=[]
+# for i in p53test:
+#     p53a,p53b=generalscan.scalbox(i)
+#     p53box.append(p53a)
+for i in range (1,int(pages)+1):
+    tmppic=Image.open(picname+str(i)+'.png')
+    tmppic=precropblank.cropblank(tmppic)
+    tmppic.save(picname+str(i)+'.png')

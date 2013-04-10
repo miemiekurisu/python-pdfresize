@@ -1,6 +1,7 @@
 import Image
 import os
 import ImageChops
+import math
 
 def rawscan(image , sf):
     coverbw=image.convert('1')
@@ -44,4 +45,12 @@ def scalbox(imglist):
             dictwhiteheight[listtmp[i-1]]=listtmp[i]-listtmp[i-1]
     #listavg = getavg(dictheight)
     return dictheight,dictwhiteheight
-    
+
+def edgeboxscan(wlist,hlist):
+    compressw = set(wlist)
+    compressw.remove(0)
+    compressh = set(hlist)
+    compressh.remove(0)
+    minedge = (min(compressh),min(compressw))
+    maxedge = (max(compressh)+1,max(compressw)+1)
+    return (minedge,maxedge)
