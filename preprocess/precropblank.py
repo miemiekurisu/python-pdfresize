@@ -67,7 +67,7 @@ def extracttoimg(): #static arg for developing/testing
     filename = '1.pdf'
     pagestart=1
     pageend=670
-    dpi=150
+    dpi=300
     
     cmdstr1=' -q -sDEVICE=pnggray -dBATCH -dNOPAUSE '
     firstpage = '-dFirstPage='+str(pagestart)+' '

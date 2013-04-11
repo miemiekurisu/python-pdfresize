@@ -1,4 +1,28 @@
 import os
+import math
+import Image
+
+def linehoughcalc():
+    None
+    
+def histogramcalc(image,mode):
+    coverbw=image.convert('1')
+    w,h = coverbw.size 
+    histogramcalc1=[]
+    if mode =='y':
+        for i in range(1,h,1):
+            img1=coverbw.transform ((w,1),Image.EXTENT ,(0,i,w,i+1))
+            histogramcalc1.append(img1.histogram()[0])
+        return histogramcalc1
+        
+def projectioncalc():
+    None
+
+def expectationcalc():
+    None
+
+def variancecalc():
+    None
 
 def statistic(anylist):
     anyset=set(anylist)

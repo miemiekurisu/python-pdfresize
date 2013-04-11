@@ -1,10 +1,11 @@
 import Image
 import os
-import generalfunc
+from generalfunc import glfunc
 import scanmodule
 from preprocess import precropblank
 from scanmodule import generalscan
 import math
+import glob
 
 
 if(os.sys.platform=='win32'):
@@ -20,8 +21,16 @@ else:
 
 
 picname = filepath+filename+'tmp'+pathflag+filename+'-'
-#os.rmdir(filepath+filename+'tmp')
-pages = precropblank.extracttoimg()
+# picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
+# for i in picfiles:
+#     os.remove(i)
+# pages = precropblank.extracttoimg()
+
+p53=Image.open(picname+'53.png')
+
+hist53 = glfunc.histogramcalc(p53,'y')
+st53=glfunc.statistic(hist53)
+
 # testimg = precropblank.overlying(filepath,filename,10,600,None,pathflag)
 # tmp=generalscan.rawscan(testimg,'w')
 # tm1,tm2 = generalscan.scalbox(tmp)
@@ -40,7 +49,7 @@ pages = precropblank.extracttoimg()
 # for i in p53test:
 #     p53a,p53b=generalscan.scalbox(i)
 #     p53box.append(p53a)
-for i in range (1,int(pages)+1):
-    tmppic=Image.open(picname+str(i)+'.png')
-    tmppic=precropblank.cropblank(tmppic)
-    tmppic.save(picname+str(i)+'.png')
+# for i in range (1,int(pages)+1):
+#     tmppic=Image.open(picname+str(i)+'.png')
+#     tmppic=precropblank.cropblank(tmppic)
+#     tmppic.save(picname+str(i)+'.png')
