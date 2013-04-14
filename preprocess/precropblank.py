@@ -67,7 +67,7 @@ def extracttoimg(): #static arg for developing/testing
     filename = '1.pdf'
     pagestart=1
     pageend=670
-    dpi=300
+    dpi=150
     
     cmdstr1=' -q -sDEVICE=pnggray -dBATCH -dNOPAUSE '
     firstpage = '-dFirstPage='+str(pagestart)+' '
@@ -82,15 +82,15 @@ def extracttoimg(): #static arg for developing/testing
     os.system(gspath+cmdstr1+firstpage+lastpage+r+outfile+'"'+filepath+filename+'"')
     return pageend
     
-def overlying(filepath,filename,startpic,endpic,lying,pathflag):
+def overlying(picspath,filename,imgnumlist,lying):
     #TODO lying is about the overlying type
-    picspath = filepath+filename+'tmp'+pathflag
-    for i in range(startpic,endpic):
-        if i==startpic:
-            imageall=Image.open(picspath+filename+'-'+str(i)+'.png')
+    
+    for i in range(0,len(imgnumlist)-1):
+        if i==0:
+            imageall=Image.open(picspath+filename+'-'+str(imgnumlist[0])+'.png')
             continue
         else:
-            imgtmp=Image.open(picspath+filename+'-'+str(i)+'.png')
+            imgtmp=Image.open(picspath+filename+'-'+str(imgnumlist[i])+'.png')
             imageall=ImageChops.darker(imgtmp,imageall)
             imgtmp=None
             continue
