@@ -1,10 +1,10 @@
 import Image
 import os
+import math
 from generalfunc import glfunc
 import scanmodule
 from preprocess import precropblank
 from scanmodule import generalscan
-import math
 import glob
 
 
@@ -21,16 +21,20 @@ else:
 
 
 picname = filepath+filename+'tmp'+pathflag+filename+'-'
-# picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
+#picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
 # for i in picfiles:
 #     os.remove(i)
 # pages = precropblank.extracttoimg()
 
-p53=Image.open(picname+'53.png')
-
-hist53 = glfunc.histogramcalc(p53,'y')
-st53=glfunc.statistic(hist53)
-
+Ex=sum( [i for i in range(1,2479)])/float(2479)
+variance=[]
+for i in range(1,670):
+    tmpimg=Image.open(picname+str(i)+'.png')
+    histmp = glfunc.histogramcalc(tmpimg,'y')
+    v=sum((float(i)-float(Ex))**2 for i in histmp)
+    variance.append(v)
+avg = sum(i for i in variance)/len(variance)
+st = [i+1 for i in range(0,len(variance)-1) if abs(variance[i]-avg)/avg<0.01]
 # testimg = precropblank.overlying(filepath,filename,10,600,None,pathflag)
 # tmp=generalscan.rawscan(testimg,'w')
 # tm1,tm2 = generalscan.scalbox(tmp)

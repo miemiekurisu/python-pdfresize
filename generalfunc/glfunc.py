@@ -12,7 +12,7 @@ def histogramcalc(image,mode):
     if mode =='y':
         for i in range(1,h,1):
             img1=coverbw.transform ((w,1),Image.EXTENT ,(0,i,w,i+1))
-            histogramcalc1.append(img1.histogram()[0])
+            histogramcalc1.append(list(img1.getdata()).count(0))
         return histogramcalc1
         
 def projectioncalc():
