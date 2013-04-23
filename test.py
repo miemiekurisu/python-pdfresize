@@ -19,25 +19,27 @@ else:
     pathflag='/'
     filename = '1.pdf'
 
-os.system('date')
-picname = filepath+filename+'tmp'+pathflag+filename+'-'
-# picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
-# for i in picfiles:
-#     os.remove(i)
-# pages = precropblank.extracttoimg()
 
-os.system('date')
+picname = filepath+filename+'tmp'+pathflag+filename+'-'
+picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
+
+
+for i in picfiles:
+    os.remove(i)
+pages = precropblank.extracttoimg()
+ 
+ 
 all = []
-for i in range(1,670):
+for i in range(1,260):
     tmpimg=Image.open(picname+str(i)+'.png')
     a=generalscan.rawscan(tmpimg,'w')
     all.append(a.count(0))
 #    print i
-os.system('date')
-Ex=sum(all)/float(670)
+
+Ex=sum(all)/float(260)
 v=sum((float(i)-float(Ex))**2 for i in all)/(len(all)-1)
-form = [i+1 for i in range(1,669) if abs(all[i]-Ex)<math.sqrt(v)]
-os.system('date')
+form = [i+1 for i in range(1,259) if abs(all[i]-Ex)<math.sqrt(v)]
+
 picspath = filepath+filename+'tmp'+pathflag
 
 imageall=precropblank.overlying(picspath,filename,form,'1')
@@ -45,7 +47,7 @@ imageall=precropblank.overlying(picspath,filename,form,'1')
 imageall.save(picspath+filename+'-'+'test.png')
 
 
-os.system('date')
+
 # Ex=sum( [i for i in range(1,2479)])/float(2479)
 # variance=[]
 # for i in range(1,670):
