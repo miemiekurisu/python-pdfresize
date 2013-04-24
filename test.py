@@ -27,24 +27,31 @@ picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
 for i in picfiles:
     os.remove(i)
 pages = precropblank.extracttoimg()
- 
- 
-all = []
-for i in range(1,260):
-    tmpimg=Image.open(picname+str(i)+'.png')
-    a=generalscan.rawscan(tmpimg,'w')
-    all.append(a.count(0))
+
+
+tmpimg=Image.open(picname+'95'+'.png')
+tmplst = list(tmpimg.getdata())
+tmpimg1=ImageChops.invert(tmpimg)
+tmplst1=list(tmpimg1.getdata())
+a,b = tmpimg1.size
+for i in (0,a*b,b-1):
+    sum(tmplst1[
+# all = []
+# for i in range(1,260):
+#     tmpimg=Image.open(picname+str(i)+'.png')
+#     a=generalscan.rawscan(tmpimg,'w')
+#     all.append(a.count(0))
 #    print i
 
-Ex=sum(all)/float(260)
-v=sum((float(i)-float(Ex))**2 for i in all)/(len(all)-1)
-form = [i+1 for i in range(1,259) if abs(all[i]-Ex)<math.sqrt(v)]
-
-picspath = filepath+filename+'tmp'+pathflag
-
-imageall=precropblank.overlying(picspath,filename,form,'1')
-
-imageall.save(picspath+filename+'-'+'test.png')
+# Ex=sum(all)/float(260)
+# v=sum((float(i)-float(Ex))**2 for i in all)/(len(all)-1)
+# form = [i+1 for i in range(1,259) if abs(all[i]-Ex)<math.sqrt(v)]
+# 
+# picspath = filepath+filename+'tmp'+pathflag
+# 
+# imageall=precropblank.overlying(picspath,filename,form,'1')
+# 
+# imageall.save(picspath+filename+'-'+'test.png')
 
 
 
