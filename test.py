@@ -44,7 +44,6 @@ tmpimg=Image.open(picname+'96'+'.tiff')
 # plt.imshow(rawlayer, cmap=plt.cm.gray)
 # plt.show()
 rawlayer = pageprocess.pagerawanalysis(tmpimg,5.5,5,5.5,5)
-a = rawlayer*-1+1
 
 verticalscan = []
 
@@ -58,6 +57,24 @@ begin=0
 flag=0
 par = []
 
+for i in range(0,len(verticalscan)-1):
+    if (flag ==0 and verticalscan[i]==0):
+        flag=0
+    elif (flag ==0 and verticalscan[i]==1):
+        begin=i
+        flag=1
+    elif (flag==1 and verticalscan[i]==0):
+        par.append([begin,i-1])
+        flag=0
+
+horizontalscan = []
+
+for i in range(75,112+1):
+    for j in rawlayer[i]:
+        if 1 in rawlayer[i][j]:
+            horizontalscan.append(1)
+        else:
+            horizontalscan.append(0)
 
 # # 
 # # tmpimgw = generalscan.rawscan(rawlayer,'w')
