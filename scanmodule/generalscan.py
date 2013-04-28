@@ -46,6 +46,46 @@ def scalbox(imglist):
     #listavg = getavg(dictheight)
     return dictheight,dictwhiteheight
 
+def rawscannew(verticalscan):
+    begin=0
+    flag=0
+    par = []
+    
+    for i in range(0,len(verticalscan)):
+        if (flag ==0 and verticalscan[i]==0):
+            flag=0
+#             print 'A begin='+str(begin)
+#             print 'A flag='+str(flag)
+        elif (flag ==0 and verticalscan[i]==1):
+            begin=i
+            flag=1
+#             print 'B begin='+str(begin)
+#             print 'B flag='+str(flag)
+        elif (flag==1 and verticalscan[i]==0):
+            par.append([begin,i+1])
+            flag=0
+#             print 'C begin='+str(begin)
+#             print 'C flag='+str(flag)
+    return par
+
+def yprojection(scanarray):
+    verticalscan=[]
+    for i in range(0,len(scanarray)):
+        if 1 in scanarray[i]:
+            verticalscan.append(1)
+        else:
+            verticalscan.append(0)
+    return verticalscan
+            
+def xprojection(scanarray,par1,par2):    
+    horizontalscan=[]
+    for i in range(0,len(scanarray[par1])):
+        if 1 in scanarray[par1:par2,i]:
+            horizontalscan.append(1)
+        else:
+            horizontalscan.append(0)
+    return horizontalscan
+    
 def edgeboxscan(wlist,hlist):
     compressw = set(wlist)
     compressw.remove(0)

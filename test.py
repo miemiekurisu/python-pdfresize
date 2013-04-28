@@ -29,12 +29,12 @@ picname = filepath+filename+'tmp'+pathflag+filename+'-'
 picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
 
 
-# for i in picfiles:
-#     os.remove(i)
-# pages = precropblank.extracttoimg()
+for i in picfiles:
+    os.remove(i)
+pages = precropblank.extracttoimg()
 
 
-tmpimg=Image.open(picname+'96'+'.tiff')
+tmpimg=Image.open(picname+'1'+'.tiff')
 #tmpimg=Image.open('D:\\tmp\\1.pdftmp\\1_bak.tif')
 # tmpimg = tmpimg.convert(mode='L')
 # tmpimgarray = np.array(tmpimg)-255
@@ -43,38 +43,35 @@ tmpimg=Image.open(picname+'96'+'.tiff')
 # rawlayer = ImageChops.invert(rawlayer)
 # plt.imshow(rawlayer, cmap=plt.cm.gray)
 # plt.show()
-rawlayer = pageprocess.pagerawanalysis(tmpimg,5.5,5,5.5,5)
+rawlayer = pageprocess.pagerawanalysis(tmpimg,5,5,6,6)
 
-verticalscan = []
+verticalscan = generalscan.yprojection(rawlayer)
 
-for i in range(0,len(rawlayer)-1):
-    if 1 in rawlayer[i]:
-        verticalscan.append(1)
-    else:
-        verticalscan.append(0)
+par = generalscan.rawscannew(verticalscan)
+# for i in range(0,len(verticalscan)-1):
+#     if (flag ==0 and verticalscan[i]==0):
+#         flag=0
+#     elif (flag ==0 and verticalscan[i]==1):
+#         begin=i
+#         flag=1
+#     elif (flag==1 and verticalscan[i]==0):
+#         par.append([begin,i-1])
+#         flag=0
 
-begin=0
-flag=0
-par = []
+for j in par:
+    j1,j2=j
+    horizontalscan = generalscan.xprojection(rawlayer,j1,j2)
+    a = generalscan.rawscannew(horizontalscan)
+    for i in a:
+        i1,i2=i
+        img1=tmpimg.transform ((i2-i1,j2-j1),Image.EXTENT ,(i1,j1,i2,j2))
+        img1.save('D:\\tmp\\'+str(j1)+'-'+str(i1)+'-'+str(j2)+'-'+str(i2)+'.tiff')
 
-for i in range(0,len(verticalscan)-1):
-    if (flag ==0 and verticalscan[i]==0):
-        flag=0
-    elif (flag ==0 and verticalscan[i]==1):
-        begin=i
-        flag=1
-    elif (flag==1 and verticalscan[i]==0):
-        par.append([begin,i-1])
-        flag=0
-
-horizontalscan = []
-
-for i in range(75,112+1):
-    for j in rawlayer[i]:
-        if 1 in rawlayer[i][j]:
-            horizontalscan.append(1)
-        else:
-            horizontalscan.append(0)
+if len(a)<=4:
+    #todo
+    #recursion if <=4, for multiple columns
+    None
+    
 
 # # 
 # # tmpimgw = generalscan.rawscan(rawlayer,'w')
