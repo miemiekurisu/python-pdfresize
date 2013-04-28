@@ -7,6 +7,11 @@ from preprocess import precropblank
 from scanmodule import generalscan
 import glob
 import ImageChops
+import numpy as np
+from scipy import ndimage
+import matplotlib.pyplot as plt
+from scanmodule import pageprocess
+
 
 if(os.sys.platform=='win32'):
     gspath = 'gswin32c.exe'
@@ -24,18 +29,66 @@ picname = filepath+filename+'tmp'+pathflag+filename+'-'
 picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
 
 
-for i in picfiles:
-    os.remove(i)
-pages = precropblank.extracttoimg()
+# for i in picfiles:
+#     os.remove(i)
+# pages = precropblank.extracttoimg()
 
 
-tmpimg=Image.open(picname+'95'+'.png')
-tmplst = list(tmpimg.getdata())
-tmpimg1=ImageChops.invert(tmpimg)
-tmplst1=list(tmpimg1.getdata())
-a,b = tmpimg1.size
-for i in (0,a*b,b-1):
-    sum(tmplst1[
+tmpimg=Image.open(picname+'96'+'.tiff')
+#tmpimg=Image.open('D:\\tmp\\1.pdftmp\\1_bak.tif')
+# tmpimg = tmpimg.convert(mode='L')
+# tmpimgarray = np.array(tmpimg)-255
+# imglayer = ndimage.binary_dilation(tmpimgarray, structure=np.ones((25,15))).astype(tmpimgarray.dtype)
+# rawlayer = Image.fromarray(imglayer*255)
+# rawlayer = ImageChops.invert(rawlayer)
+# plt.imshow(rawlayer, cmap=plt.cm.gray)
+# plt.show()
+rawlayer = pageprocess.pagerawanalysis(tmpimg,25,15)
+
+tmpimgw = generalscan.rawscan(rawlayer,'w')
+x,y = rawlayer.size
+
+boximgw,lost = generalscan.scalbox(tmpimgw)
+layerlist = {}
+tmpkey = boximgw.keys()
+tmpkey.sort()
+for i in tmpkey:
+    img1=rawlayer.transform ((x,boximgw.get(i)),Image.EXTENT ,(0,i,x,i+boximgw.get(i)))
+    layerlist[i]=img1
+
+res = {}
+tmpkey = layerlist.keys()
+tmpkey.sort()
+for i in tmpkey:
+    tmpbox,lost = generalscan.scalbox(generalscan.rawscan(layerlist.get(i),'h'))
+    res[i]=tmpbox
+    
+boxs = []
+tmpkey = boximgw.keys()
+tmpkey.sort()
+for i in tmpkey:
+    hight = boximgw.get(i)
+    for j in res.get(i).keys():
+        blockbox = [j,i,j+res.get(i).get(j),i+boximgw.get(i)]
+        boxs.append(blockbox)
+        
+imga={}
+for i in boxs:
+    a,b,c,d = i
+    img1=tmpimg.transform ((c-a,d-b),Image.EXTENT,(a,b,c,d))
+    imga[((a,b),(c,d))]=img1
+
+
+        
+# for i in range(0,len(imga.values())-1):
+#     imga.values()[i].save('D:\\'+str(i)+'.png')
+
+# tmplst = list(tmpimg.getdata())
+# tmpimg1=ImageChops.invert(tmpimg)
+# tmplst1=list(tmpimg1.getdata())
+# a,b = tmpimg1.size
+# for i in (0,a*b,b-1):
+#     sum(tmplst1[
 # all = []
 # for i in range(1,260):
 #     tmpimg=Image.open(picname+str(i)+'.png')

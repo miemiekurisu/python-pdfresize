@@ -73,7 +73,7 @@ def extracttoimg(): #static arg for developing/testing
     firstpage = '-dFirstPage='+str(pagestart)+' '
     lastpage = '-dLastPage='+str(pageend)+' '
     r = '-r'+str(dpi)+' '
-    outfile = '-sOutputFile="'+filepath+filename+'tmp'+flag+filename+'-%d.png" '
+    outfile = '-sOutputFile="'+filepath+filename+'tmp'+flag+filename+'-%d.tiff" '
     
     if os.path.isdir(filepath+filename+'tmp'): 
         pass 
@@ -87,10 +87,10 @@ def overlying(picspath,filename,imgnumlist,lying):
     
     for i in range(0,len(imgnumlist)-1):
         if i==0:
-            imageall=Image.open(picspath+filename+'-'+str(imgnumlist[0])+'.png')
+            imageall=Image.open(picspath+filename+'-'+str(imgnumlist[0])+'.tiff')
             continue
         else:
-            imgtmp=Image.open(picspath+filename+'-'+str(imgnumlist[i])+'.png')
+            imgtmp=Image.open(picspath+filename+'-'+str(imgnumlist[i])+'.tiff')
             imageall=ImageChops.darker(imgtmp,imageall)
             imgtmp=None
             continue
