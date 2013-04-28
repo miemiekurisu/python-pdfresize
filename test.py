@@ -43,40 +43,55 @@ tmpimg=Image.open(picname+'96'+'.tiff')
 # rawlayer = ImageChops.invert(rawlayer)
 # plt.imshow(rawlayer, cmap=plt.cm.gray)
 # plt.show()
-rawlayer = pageprocess.pagerawanalysis(tmpimg,25,15)
+rawlayer = pageprocess.pagerawanalysis(tmpimg,5.5,5,5.5,5)
+a = rawlayer*-1+1
 
-tmpimgw = generalscan.rawscan(rawlayer,'w')
-x,y = rawlayer.size
+verticalscan = []
 
-boximgw,lost = generalscan.scalbox(tmpimgw)
-layerlist = {}
-tmpkey = boximgw.keys()
-tmpkey.sort()
-for i in tmpkey:
-    img1=rawlayer.transform ((x,boximgw.get(i)),Image.EXTENT ,(0,i,x,i+boximgw.get(i)))
-    layerlist[i]=img1
+for i in range(0,len(rawlayer)-1):
+    if 1 in rawlayer[i]:
+        verticalscan.append(1)
+    else:
+        verticalscan.append(0)
 
-res = {}
-tmpkey = layerlist.keys()
-tmpkey.sort()
-for i in tmpkey:
-    tmpbox,lost = generalscan.scalbox(generalscan.rawscan(layerlist.get(i),'h'))
-    res[i]=tmpbox
-    
-boxs = []
-tmpkey = boximgw.keys()
-tmpkey.sort()
-for i in tmpkey:
-    hight = boximgw.get(i)
-    for j in res.get(i).keys():
-        blockbox = [j,i,j+res.get(i).get(j),i+boximgw.get(i)]
-        boxs.append(blockbox)
-        
-imga={}
-for i in boxs:
-    a,b,c,d = i
-    img1=tmpimg.transform ((c-a,d-b),Image.EXTENT,(a,b,c,d))
-    imga[((a,b),(c,d))]=img1
+begin=0
+flag=0
+par = []
+
+
+# # 
+# # tmpimgw = generalscan.rawscan(rawlayer,'w')
+# # x,y = rawlayer.size
+# # 
+# # boximgw,lost = generalscan.scalbox(tmpimgw)
+# # layerlist = {}
+# # tmpkey = boximgw.keys()
+# # tmpkey.sort()
+# # for i in tmpkey:
+# #     img1=rawlayer.transform ((x,boximgw.get(i)),Image.EXTENT ,(0,i,x,i+boximgw.get(i)))
+# #     layerlist[i]=img1
+# # 
+# # res = {}
+# # tmpkey = layerlist.keys()
+# # tmpkey.sort()
+# # for i in tmpkey:
+# #     tmpbox,lost = generalscan.scalbox(generalscan.rawscan(layerlist.get(i),'h'))
+# #     res[i]=tmpbox
+# #     
+# # boxs = []
+# # tmpkey = boximgw.keys()
+# # tmpkey.sort()
+# # for i in tmpkey:
+# #     hight = boximgw.get(i)
+# #     for j in res.get(i).keys():
+# #         blockbox = [j,i,j+res.get(i).get(j),i+boximgw.get(i)]
+# #         boxs.append(blockbox)
+# #         
+# # imga={}
+# # for i in boxs:
+# #     a,b,c,d = i
+# #     img1=tmpimg.transform ((c-a,d-b),Image.EXTENT,(a,b,c,d))
+# #     imga[((a,b),(c,d))]=img1
 
 
         
