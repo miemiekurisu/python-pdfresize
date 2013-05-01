@@ -45,6 +45,7 @@ print 'readover'
 # plt.imshow(rawlayer, cmap=plt.cm.gray)
 # plt.show()
 # rawlayer = pageprocess.pagerawanalysis(tmpimg,5,5,5,5)
+tmpimg = tmpimg.convert(mode='1')
 tmpimg = tmpimg.convert(mode='L')
 rawlayer = np.array(tmpimg)-255
 print 'array over'
@@ -70,8 +71,9 @@ vblank=[]
 for i in blank:
     vblank.append(i[1]-i[0])
 
-avglineb = (sum(vblank)/len(vblank)*1.0)
-    
+avglineb = (sum(vblank)/len(vblank)*0.6)
+if(avglineb>100):
+    avglineb=30
 ana = pageprocess.pagerawanalysis(tmpimg,avglineb,avglineb,5,5)
 Image.fromarray(ana*255,'L').save(filepath+'raw.tiff')
 
@@ -94,9 +96,17 @@ for i in lineword:
     tfline=[]
     for j in i:
         a,b,c,d = j
-        tfline.append(((c-a)*1.0/w)>=0.2)
+        if ((c-a)*1.0/w)<0.1:
+            tfline.append('W')
+        elif ((c-a)*1.0/w)<0.3 and ((c-a)*1.0/w)>=0.1:
+            tfline.append('S')
+        elif ((c-a)*1.0/w) >=0.3:
+            tfline.append('C')
+#         tfline.append(((c-a)*1.0/w)>=0.2)
     tfall.append(tfline)
-# 
+
+for i in tfall:
+    
 # totalblank=[]
 # for j in lineword:
 #     blanksqrt=[]

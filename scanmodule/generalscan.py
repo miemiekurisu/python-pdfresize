@@ -66,6 +66,9 @@ def rawscannew(verticalscan):
             flag=0
 #             print 'C begin='+str(begin)
 #             print 'C flag='+str(flag)
+        elif (flag==1 and verticalscan[i]==1 and i==len(verticalscan)-1):
+            par.append([begin,i+1])
+            flag=0            
     return par
 
 def yprojection(scanarray):
