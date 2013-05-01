@@ -29,12 +29,13 @@ picname = filepath+filename+'tmp'+pathflag+filename+'-'
 picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
 
 
-for i in picfiles:
-    os.remove(i)
-pages = precropblank.extracttoimg()
+# for i in picfiles:
+#     os.remove(i)
+# pages = precropblank.extracttoimg()
 
 
-tmpimg=Image.open(picname+'1'+'.tiff')
+tmpimg=Image.open(picname+'95'+'.tiff')
+print 'readover'
 #tmpimg=Image.open('D:\\tmp\\1.pdftmp\\1_bak.tif')
 # tmpimg = tmpimg.convert(mode='L')
 # tmpimgarray = np.array(tmpimg)-255
@@ -43,11 +44,81 @@ tmpimg=Image.open(picname+'1'+'.tiff')
 # rawlayer = ImageChops.invert(rawlayer)
 # plt.imshow(rawlayer, cmap=plt.cm.gray)
 # plt.show()
-rawlayer = pageprocess.pagerawanalysis(tmpimg,5,5,6,6)
-
+# rawlayer = pageprocess.pagerawanalysis(tmpimg,5,5,5,5)
+tmpimg = tmpimg.convert(mode='L')
+rawlayer = np.array(tmpimg)-255
+print 'array over'
+# Image.fromarray(rawlayer*255,'L').save(filepath+'raw.tiff')
 verticalscan = generalscan.yprojection(rawlayer)
-
+print 'yprojection over'
 par = generalscan.rawscannew(verticalscan)
+h,w = rawlayer.shape
+print 'rawscannew over'
+
+blank=[]
+last=[]
+for i in par:
+    a,b=i
+    if len(last)<1:
+        blank.append([0,a])
+        last=i
+    else:
+        blank.append([last[1],a])
+        last=i
+print '2 over'
+vblank=[]
+for i in blank:
+    vblank.append(i[1]-i[0])
+
+avglineb = (sum(vblank)/len(vblank)*1.0)
+    
+ana = pageprocess.pagerawanalysis(tmpimg,avglineb,avglineb,5,5)
+Image.fromarray(ana*255,'L').save(filepath+'raw.tiff')
+
+anayp = generalscan.yprojection(ana)
+anapar = generalscan.rawscannew(anayp)
+
+lineword = []
+for j in anapar:
+    j1,j2=j
+    horizontalscan = generalscan.xprojection(ana,j1,j2)
+    a = generalscan.rawscannew(horizontalscan)
+    wordsret = []
+    for i in a:
+        i1,i2=i
+        wordsret.append((i1,j1,i2,j2))
+    lineword.append(wordsret)
+
+tfall = []
+for i in lineword:
+    tfline=[]
+    for j in i:
+        a,b,c,d = j
+        tfline.append(((c-a)*1.0/w)>=0.2)
+    tfall.append(tfline)
+# 
+# totalblank=[]
+# for j in lineword:
+#     blanksqrt=[]
+#     last=[]
+#     avg=[]
+#     for i in j:
+#         a,b,c,d=i
+#         avg.append(c-a)
+#         if len(last)<1:
+#             blanksqrt.append((0,b,a,d))
+#             last=i
+#         elif i== lineword[0][-1]:
+#             blanksqrt.append((last[2],b,a,w))
+#         else:
+#             blanksqrt.append((last[2],b,a,d))
+#             last=i
+#     avg.remove(max(avg))
+#     avg.remove(min(avg))
+#     totalblank.append([i for i in blanksqrt if i[2]-i[0]>(sum(avg)/len(avg)*1.0)])
+
+
+    
 # for i in range(0,len(verticalscan)-1):
 #     if (flag ==0 and verticalscan[i]==0):
 #         flag=0
@@ -57,20 +128,17 @@ par = generalscan.rawscannew(verticalscan)
 #     elif (flag==1 and verticalscan[i]==0):
 #         par.append([begin,i-1])
 #         flag=0
+# 
+# for j in par:
+#     j1,j2=j
+#     horizontalscan = generalscan.xprojection(rawlayer,j1,j2)
+#     a = generalscan.rawscannew(horizontalscan)
+#     for i in a:
+#         i1,i2=i
+#         img1=tmpimg.transform ((i2-i1,j2-j1),Image.EXTENT ,(i1,j1,i2,j2))
+#         img1.save(filepath+str(j1)+'-'+str(i1)+'-'+str(j2)+'-'+str(i2)+'.tiff')
+# 
 
-for j in par:
-    j1,j2=j
-    horizontalscan = generalscan.xprojection(rawlayer,j1,j2)
-    a = generalscan.rawscannew(horizontalscan)
-    for i in a:
-        i1,i2=i
-        img1=tmpimg.transform ((i2-i1,j2-j1),Image.EXTENT ,(i1,j1,i2,j2))
-        img1.save('D:\\tmp\\'+str(j1)+'-'+str(i1)+'-'+str(j2)+'-'+str(i2)+'.tiff')
-
-if len(a)<=4:
-    #todo
-    #recursion if <=4, for multiple columns
-    None
     
 
 # # 
