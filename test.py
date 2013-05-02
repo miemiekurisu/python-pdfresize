@@ -50,63 +50,117 @@ tmpimg = tmpimg.convert(mode='L')
 rawlayer = np.array(tmpimg)-255
 print 'array over'
 # Image.fromarray(rawlayer*255,'L').save(filepath+'raw.tiff')
-verticalscan = generalscan.yprojection(rawlayer)
+h,w = rawlayer.shape
+verticalscan = generalscan.yprojection(rawlayer,0,h)
 print 'yprojection over'
 par = generalscan.rawscannew(verticalscan)
-h,w = rawlayer.shape
-print 'rawscannew over'
 
-blank=[]
-last=[]
-for i in par:
-    a,b=i
-    if len(last)<1:
-        blank.append([0,a])
-        last=i
+print 'yprojection rawscannew over'
+
+print 'calc full linebox'
+
+linebox = []
+last=0
+for i in range(0,len(par)):
+    if i == 0:
+        a,b=par[i]
+        linebox.append([0,a-1])
+        linebox.append(par[i])
+        last=b
     else:
-        blank.append([last[1],a])
-        last=i
-print '2 over'
-vblank=[]
-for i in blank:
-    vblank.append(i[1]-i[0])
+        a,b=par[i]
+        linebox.append([last,a-1])
+        linebox.append(par[i])
+        last=b
 
-avglineb = (sum(vblank)/len(vblank)*0.6)
-if(avglineb>100):
-    avglineb=30
-ana = pageprocess.pagerawanalysis(tmpimg,avglineb,avglineb,5,5)
-Image.fromarray(ana*255,'L').save(filepath+'raw.tiff')
+print 'xprojection start'
 
-anayp = generalscan.yprojection(ana)
-anapar = generalscan.rawscannew(anayp)
-
-lineword = []
-for j in anapar:
+wordsbox = []
+for j in linebox:
     j1,j2=j
-    horizontalscan = generalscan.xprojection(ana,j1,j2)
-    a = generalscan.rawscannew(horizontalscan)
+    horizontalscan = generalscan.xprojection(rawlayer,j1,j2)
+    a = generalscan.rawscannew(horizontalscan)        
     wordsret = []
     for i in a:
         i1,i2=i
         wordsret.append((i1,j1,i2,j2))
-    lineword.append(wordsret)
+    wordsbox.append(wordsret)
 
-tfall = []
-for i in lineword:
-    tfline=[]
-    for j in i:
-        a,b,c,d = j
-        if ((c-a)*1.0/w)<0.1:
-            tfline.append('W')
-        elif ((c-a)*1.0/w)<0.3 and ((c-a)*1.0/w)>=0.1:
-            tfline.append('S')
-        elif ((c-a)*1.0/w) >=0.3:
-            tfline.append('C')
-#         tfline.append(((c-a)*1.0/w)>=0.2)
-    tfall.append(tfline)
+print 'xprojection over, get words box'
+    if len(a)<1:
+        wordsret.append((0,j1,w,j2))
+        wordsbox.append(wordsret)
+        continue
+print 'calc empty rectangles'
 
-for i in tfall:
-    
+
+
+# blank=[]
+# last=[]
+# for i in par:
+#     a,b=i
+#     if len(last)<1:
+#         blank.append([0,a])
+#         last=i
+#     else:
+#         blank.append([last[1],a])
+#         last=i
+# print '2 over'
+# vblank=[]
+# for i in blank:
+#     vblank.append(i[1]-i[0])
+# 
+# avglineb = (sum(vblank)/len(vblank)*0.6)
+# if(avglineb>100):
+#     avglineb=30
+# ana = pageprocess.pagerawanalysis(tmpimg,avglineb,avglineb,5,5)
+# Image.fromarray(ana*255,'L').save(filepath+'raw.tiff')
+# 
+# anayp = generalscan.yprojection(ana,0,ana.shape[0])
+# anapar = generalscan.rawscannew(anayp)
+#         
+# 
+
+# 
+# for i in anapar:
+#     for j in par:
+#         a,b = i
+
+# tfall = []
+# for i in lineword:
+#     tfline=[]
+#     for j in i:
+#         a,b,c,d = j
+#         if ((c-a)*1.0/w)<0.1:
+#             tfline.append('W')
+#         elif ((c-a)*1.0/w)<0.3 and ((c-a)*1.0/w)>=0.1:
+#             tfline.append('S')
+#         elif ((c-a)*1.0/w) >=0.3:
+#             tfline.append('C')
+# #         tfline.append(((c-a)*1.0/w)>=0.2)
+#     tfall.append(tfline)
+# 
+# valitf = []
+# 
+# for i in range(0,len(tfall)):
+#     vali=[]
+#     for j in range(0,len(tfall[i])):
+#         a,b,c,d=lineword[i][j]
+#         print str(a)+':'+str(b)+':'+str(c)+':'+str(d)
+#         if tfall[i][j]=='C':
+#             imga=tmpimg.transform ((c-a,d-b),Image.EXTENT ,(a,b,c,d))
+#             imga = imga.convert(mode='1')
+#             imga = imga.convert(mode='L')
+#             imgarray = np.array(imga)-255
+#             imgverticalscan = generalscan.yprojection(imgarray,0,imgarray.shape[0])
+#             imgpar = generalscan.rawscannew(imgverticalscan)
+#             if len(imgpar)<=1:
+#                 vali.append('P')
+#             else:
+#                 vali.append('C')
+#         else:
+#             vali.append('K')
+#     valitf.append(vali)
 # totalblank=[]
 # for j in lineword:
 #     blanksqrt=[]

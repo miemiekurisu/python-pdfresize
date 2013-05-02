@@ -71,9 +71,9 @@ def rawscannew(verticalscan):
             flag=0            
     return par
 
-def yprojection(scanarray):
+def yprojection(scanarray,y1,y2):
     verticalscan=[]
-    for i in range(0,len(scanarray)):
+    for i in range(0,len(scanarray[y1:y2])):
         if 1 in scanarray[i]:
             verticalscan.append(1)
         else:
