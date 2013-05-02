@@ -57,26 +57,26 @@ par = generalscan.rawscannew(verticalscan)
 
 print 'yprojection rawscannew over'
 
-print 'calc full linebox'
-
-linebox = []
-last=0
-for i in range(0,len(par)):
-    if i == 0:
-        a,b=par[i]
-        linebox.append([0,a-1])
-        linebox.append(par[i])
-        last=b
-    else:
-        a,b=par[i]
-        linebox.append([last,a-1])
-        linebox.append(par[i])
-        last=b
+# print 'calc full linebox'
+# 
+# linebox = []
+# last=0
+# for i in range(0,len(par)):
+#     if i == 0:
+#         a,b=par[i]
+#         linebox.append([0,a-1])
+#         linebox.append(par[i])
+#         last=b
+#     else:
+#         a,b=par[i]
+#         linebox.append([last,a-1])
+#         linebox.append(par[i])
+#         last=b
 
 print 'xprojection start'
 
 wordsbox = []
-for j in linebox:
+for j in par:
     j1,j2=j
     horizontalscan = generalscan.xprojection(rawlayer,j1,j2)
     a = generalscan.rawscannew(horizontalscan)        
@@ -87,13 +87,25 @@ for j in linebox:
     wordsbox.append(wordsret)
 
 print 'xprojection over, get words box'
-    if len(a)<1:
-        wordsret.append((0,j1,w,j2))
-        wordsbox.append(wordsret)
-        continue
+#     if len(a)<1:
+#         wordsret.append((0,j1,w,j2))
+#         wordsbox.append(wordsret)
+#         continue
 print 'calc empty rectangles'
 
+print 'calc full linebox'
 
+linebox = []
+last=0
+for i in range(0,len(par)):
+    if i == 0:
+        a,b=par[i]
+        linebox.append([0,a-1])
+        last=b
+    else:
+        a,b=par[i]
+        linebox.append([last,a-1])
+        last=b
 
 # blank=[]
 # last=[]
