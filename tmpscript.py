@@ -37,6 +37,11 @@ picfiles = glob.glob(filepath+filename+'tmp'+pathflag+filename+'-*')
 tmpimg=Image.open(picname+'95'+'.tiff')
 print 'readover'
 
+w,h = tmpimg.size
+
+for i in range(1,20):
+    tmpimg.transform((int(round(w*0.05)),int(round(h*0.05))),Image.EXTENT ,(int(round(w*(i*0.05-0.05))),int(round(h*(i*0.05-0.05))),int(round(w*i*0.05)),int(round(h*i*0.05)))).save(filepath+str(i)+'crop.tiff')
+
 tmpimg = tmpimg.convert(mode='1')
 tmpimg = tmpimg.convert(mode='L')
 rawlayer = np.array(tmpimg)-255
