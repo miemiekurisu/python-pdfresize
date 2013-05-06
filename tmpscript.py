@@ -40,7 +40,12 @@ print 'readover'
 w,h = tmpimg.size
 
 for i in range(1,20):
-    tmpimg.transform((int(round(w*0.05)),int(round(h*0.05))),Image.EXTENT ,(int(round(w*(i*0.05-0.05))),int(round(h*(i*0.05-0.05))),int(round(w*i*0.05)),int(round(h*i*0.05)))).save(filepath+str(i)+'crop.tiff')
+    for j in range(1,20):
+        w1= int(round(w*(i*0.05-0.05)))
+        h1= int(round(h*(j*0.05-0.05)))
+        w2= int(round(w*i*0.05))
+        h2= int(round(h*i*0.05))
+        tmpimg.transform((int(round(w*0.05)),int(round(h*0.05))),Image.EXTENT ,(w1,h1,w2,h2)).save(filepath+str(i)+'-'+str(j)+'crop.tiff')
 
 tmpimg = tmpimg.convert(mode='1')
 tmpimg = tmpimg.convert(mode='L')
